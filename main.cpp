@@ -50,8 +50,8 @@ int main() {
     };
         // ll->insert_tuple(attributes);
         // ll->serialize(1,"test","table");
-
-
+        std::vector<Tuple> res=ll->get_tuple({"Name","Alice"});
+        std::cout<<res.size()<<std::endl;
         std::cout<<ll->tuples.size()<<std::endl;
         std::cout<<ll->tuples[0].get_attribute("Name")<<std::endl;
         

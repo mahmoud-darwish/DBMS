@@ -19,11 +19,10 @@ bool Page::insert_tuple(const std::vector<std::pair<std::string, std::pair<int, 
     std::cout<<"free  "<<freespace;
     if (freespace >= 50){
         freespace -= 50;
-        ids_Range.first = (pageId-1)*81+1;
-        ids_Range.second = (pageId) * 81 ;
         for (const auto& attr : attributes) {
         t->add_attribute(attr.first, attr.second.second);
     }
+    t->add_attribute("id",std::to_string(tuples.size()+ ids_Range.first));
     }
     tuples.push_back(*t);
 }
@@ -214,4 +213,14 @@ Page* Page::deserialize(Page* page,int page_id, const std::string& dbName, const
         page->ids_Range={id_first,id_second};
         file.close();
         return page;
+    }
+
+std::vector<Tuple> Page::get_tuple(const std::pair<std::string, std::string>& attribute){
+        std::vector<Tuple> results;
+        for(auto tuple:tuples){
+            if(tuple.get_attribute(attribute.first) == attribute.second){
+                results.push_back(tuple);
+            }
+        }
+        return results;
     }

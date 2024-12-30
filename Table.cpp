@@ -7,7 +7,7 @@ Page* Table::Create_page() {
     // Create a new page and add it to the directory
     // Implementation depends on how pages are stored
     // For now, increment page_count
-    Page* page = new Page(4096-3*sizeof(int),{0,0});
+    Page* page = new Page(4096-3*sizeof(int),{(page_count-1)*81+1,(page_count) * 81});
     page->serialize(page_count,"test",table_name);
     page->pageId = page_count;
     
