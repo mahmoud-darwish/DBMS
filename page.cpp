@@ -16,9 +16,15 @@ Page::Page(int free,std::pair<int,int>)
     #pragma pack(push, 1)
 bool Page::insert_tuple(const std::vector<std::pair<std::string, std::pair<int, std::string>>>& attributes){
     Tuple* t = new Tuple();
-
-    t->add_attribute("Name", "Alice");
-    t->add_attribute("Age", "30");
+    std::cout<<"free  "<<freespace;
+    if (freespace >= 50){
+        freespace -= 50;
+        ids_Range.first = (pageId-1)*81+1;
+        ids_Range.second = (pageId) * 81 ;
+        for (const auto& attr : attributes) {
+        t->add_attribute(attr.first, attr.second.second);
+    }
+    }
     tuples.push_back(*t);
 }
 
@@ -157,8 +163,8 @@ Page* Page::deserialize(Page* page,int page_id, const std::string& dbName, const
         int id_second = ntohl(id_second_network);
 
         const size_t used_space = PAGE_SIZE - freespace;
-        // const size_t tuples_size = used_space - 3 * sizeof(int);    
-        const size_t tuples_size = 200;    
+        const size_t tuples_size = used_space - 3 * sizeof(int);    
+        
 
        const int dsize = PAGE_SIZE - 3 * sizeof(int);
     std::string pageData(dsize, '\0');
@@ -166,6 +172,7 @@ Page* Page::deserialize(Page* page,int page_id, const std::string& dbName, const
 
     // Deserialize the tuples from the page data
     page->tuples.clear();
+    
     size_t dataOffset = 0;
     while (dataOffset + TUPLE_SIZE <= tuples_size) {
         std::string tupleData(&pageData[dataOffset], TUPLE_SIZE);
@@ -202,9 +209,9 @@ Page* Page::deserialize(Page* page,int page_id, const std::string& dbName, const
         std::cout<<freespace<<"from desir"<<std::endl;
         //page->tuples = tuples;
         std::cout<<id_first<<"from desir"<<std::endl;
-    page->freespace = freespace;
-
-    page->ids_Range={id_first,id_second};
+        page->freespace = freespace;
+        page->pageId = page_id;
+        page->ids_Range={id_first,id_second};
         file.close();
         return page;
     }

@@ -34,23 +34,29 @@ int main() {
         mp["rwo"] = "Addlice";
         mp["ddd"] = "Addlice";
         mp["oddne"] = "Aliddce";
-        // db.createDatabase();
-        // db.createTable("table",mp);
+        //db.createDatabase();
+        //db.createTable("table",mp);
      
         Table* my_table = db.getTable("table");   
-        // Page* page = my_table->Create_page();
+        //Page* page = my_table->Create_page();
         // std::cout << my_table->page_count<< std::endl;
         Page* ll = my_table->Get_page(1);
-
-        // ll->insert_tuple({});
-        // ll->insert_tuple({});
-        // ll->insert_tuple({});
+         std::vector<std::pair<std::string, std::pair<int, std::string>>> attributes = {
+        {"Name", {1, "Alice"}},       // Key: "Name", Value: {1, "Alice"}
+        {"Age", {2, "30"}},           // Key: "Age", Value: {2, "30"}
+        {"City", {3, "New York"}},    // Key: "City", Value: {3, "New York"}
+        {"Occupation", {4, "Engineer"}}, // Key: "Occupation", Value: {4, "Engineer"}
+        {"Hobby", {5, "Reading"}}     // Key: "Hobby", Value: {5, "Reading"}
+    };
+        // ll->insert_tuple(attributes);
         // ll->serialize(1,"test","table");
 
 
-        // std::cout<<ll->tuples[83].get_attribute("Name")<<std::endl;
-        std::cout<<ll->tuples[3].get_attribute("Age")<<std::endl;
-    
+        std::cout<<ll->tuples.size()<<std::endl;
+        std::cout<<ll->tuples[0].get_attribute("Name")<<std::endl;
+        
+        std::cout<<ll->tuples[0].get_attribute("City")<<std::endl;
+
 
 
 

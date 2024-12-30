@@ -12,6 +12,7 @@
 class Page {
 public:
     // Attributes
+    int pageId;
     int freespace;  // Metadata for the page
      std::vector<Tuple> tuples; // Vector of tuples
     std::pair<int,int> ids_Range;
