@@ -33,8 +33,8 @@ public:
 
     // Delete a table
     bool deleteTable(const std::string& tableName);
-    bool deserializeSchema(std::map<std::string, std::string>& schema, const std::string& dbName, const std::string& fileName,uint32_t& size);
-    bool serializeSchema(const std::map<std::string, std::string>& schema, const std::string& dbName, const std::string& fileName,uint32_t& size) ;
+    Table* deserializeSchema(const std::string& dbName, const std::string& fileName);
+    bool serializeSchema(const std::map<std::string, std::string>& schema, const std::string& dbName, const std::string& fileName,uint32_t& size, uint32_t page_count) ;
     // Get a table by name
     Table* getTable(const std::string tableName);
 };

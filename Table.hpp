@@ -13,16 +13,16 @@ class Table {
 public:
     // Attributes
     std::map<std::string, std::string> schema ;  // Reference to schema
-    std::vector<std::map<int, std::pair<int, int>>> directory;  // Vector of pages
+    //std::vector<std::map<int, std::pair<int, int>>> directory;  // Vector of pages
     std::string table_name;
     uint32_t size;
-    uint32_t page_count;
+    uint32_t page_count = 0;
 
     // Constructor
     Table(const std::string table_name) : table_name(table_name){};
 
     // Methods
-    void Create_page();  // Method to create a new page
+    Page* Create_page(); // Method to create a new page
     Page* Get_page(int page_id);  // Get a page by page_id
     void Update_page(int page_id, Page* page);  // Update a page
     void Delete_page(int page_id);  // Delete a page

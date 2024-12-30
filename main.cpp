@@ -36,7 +36,18 @@ int main() {
         mp["oddne"] = "Aliddce";
         db.createDatabase();
         db.createTable("table",mp);
-        db.getTable("table");
+     
+        Table* my_table = db.getTable("table");   
+        Page* page = my_table->Create_page();
+       std::cout << my_table->page_count<< std::endl;
+        page = my_table->Get_page(1);
+        std::cout << page->freespace<< std::endl;
+        std::cout << page->ids_Range.first << std::endl;
+        
+        
+    
+
+
 
     // } catch (const std::ios_base::failure& e) {
     //     std::cerr << "Error: " << e.what() << std::endl;

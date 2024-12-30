@@ -6,20 +6,28 @@
 #include <map>
 #include <utility>
 #define PAGE_SIZE 4096
+struct Tuple {
+    int field1;
+    int field2;
+    int field3;
+};
 // Forward declaration of the Tuple class
-#include "tuple.hpp"
+//#include "tuple.hpp"
 class Page {
 public:
     // Attributes
-    int Page_MetaData;  // Metadata for the page
+    int freespace;  // Metadata for the page
     std::vector<Tuple> tuples; // Vector of tuples
+    std::pair<int,int> ids_Range;
     char* PageData[PAGE_SIZE];
     // Methods
     bool insert_tuple(const std::vector<std::pair<std::string, std::pair<int, std::string>>>& attributes);
-    Tuple* get_tuple(const std::pair<std::string, std::string>& attribute);
+    //Tuple* get_tuple(const std::pair<std::string, std::string>& attribute);
     bool update_tuple(const std::vector<std::pair<std::string, std::string>>& attributes);
     bool del_tuple(const std::pair<std::string, std::string>& attribute);
-
+    bool serialize(int page_id, const std::string& dbName, const std::string& tableName);
+    Page* deserialize(int page_id, const std::string& dbName, const std::string& tableName);
+    Page();
 private:
     // Additional private members can be added if needed
 };
