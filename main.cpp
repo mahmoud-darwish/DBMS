@@ -34,17 +34,22 @@ int main() {
         mp["rwo"] = "Addlice";
         mp["ddd"] = "Addlice";
         mp["oddne"] = "Aliddce";
-        db.createDatabase();
-        db.createTable("table",mp);
+        // db.createDatabase();
+        // db.createTable("table",mp);
      
         Table* my_table = db.getTable("table");   
-        Page* page = my_table->Create_page();
-       std::cout << my_table->page_count<< std::endl;
-        page = my_table->Get_page(1);
-        std::cout << page->freespace<< std::endl;
-        std::cout << page->ids_Range.first << std::endl;
-        
-        
+        // Page* page = my_table->Create_page();
+        // std::cout << my_table->page_count<< std::endl;
+        Page* ll = my_table->Get_page(1);
+
+        // ll->insert_tuple({});
+        // ll->insert_tuple({});
+        // ll->insert_tuple({});
+        // ll->serialize(1,"test","table");
+
+
+        // std::cout<<ll->tuples[83].get_attribute("Name")<<std::endl;
+        std::cout<<ll->tuples[3].get_attribute("Age")<<std::endl;
     
 
 

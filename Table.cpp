@@ -7,7 +7,7 @@ Page* Table::Create_page() {
     // Create a new page and add it to the directory
     // Implementation depends on how pages are stored
     // For now, increment page_count
-    Page* page = new Page();
+    Page* page = new Page(4096-3*sizeof(int),{0,0});
     page->serialize(1,"test",table_name);
     
 }
@@ -15,10 +15,10 @@ Page* Table::Create_page() {
 Page* Table::Get_page(int page_id) {
     // Retrieve the page with the given page_id
     // Implementation depends on storage mechanism
-    Page* page = new Page();
-   
-   page->deserialize(page_id,"test",table_name);
-    return page;
+    
+   Page* pg = new Page(4096,{0,0});
+  Page::deserialize(pg,page_id,"test",table_name);
+    return pg;
 }
 
 void Table::Update_page(int page_id, Page* page) {

@@ -4,21 +4,28 @@
 #include <vector>
 #include <string>
 #include <utility>
-#include <map>
+#include <iostream>
 
 class Tuple {
 public:
+    enum AttributeType {
+        TYPE_STRING = 1,
+        TYPE_INT = 2,
+        // Add more types as needed
+    };
+
     // Attributes
-    std::vector<std::pair<std::string, std::pair<int, std::string>>> attributes;  // Vector of attributes (key, type-value pair)
+    std::vector<std::pair<std::string, std::pair<AttributeType, std::string>>> attributes;
 
     // Methods
-    void add_attribute(const std::string& key, const std::string& value);  // Add an attribute to the tuple
-    std::string get_attribute(const std::string& key);  // Get an attribute's value by key
-    void update_attribute(const std::vector<std::pair<std::string, std::string>>& attributes);  // Update multiple attributes
-    void Serialize();  // Serialize the tuple data
-    void Deserialize();  // Deserialize the tuple data
+    void add_attribute(const std::string& key, const std::string& value);
+    std::string get_attribute(const std::string& key);
+    void update_attribute(const std::vector<std::pair<std::string, std::string>>& attrs);
+    std::string Serialize(); // Returns a fixed-size 50-byte string
+    void Deserialize(const std::string& data); // Deserializes from a 50-byte string
 
 private:
+    static const size_t TUPLE_SIZE = 50; // Fixed size of 50 bytes
     // Additional private members can be added if needed for serialization
 };
 

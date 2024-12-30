@@ -1,175 +1,26 @@
 #include "page.hpp"
+#include "tuple.hpp"
 #include <fstream>
 #include <iostream>
 #include <utility>
 #include <cstring> 
 #include <arpa/inet.h>
 #include <memory>
-Page::Page()
-        : freespace(0),
-          ids_Range({0, 0}),
-          tuples() {
+Page::Page(int free,std::pair<int,int>)
+        : freespace(free),
+          ids_Range({0, 0})
+          {
         // Initialize PageData to all zeros
         std::memset(PageData, 0, PAGE_SIZE);
     }
     #pragma pack(push, 1)
+bool Page::insert_tuple(const std::vector<std::pair<std::string, std::pair<int, std::string>>>& attributes){
+    Tuple* t = new Tuple();
 
-// bool Page::serialize(int page_id, const std::string& dbName, const std::string& tableName) {
-//         // Construct file path
-//         std::string filePath = dbName + "/" + tableName + ".HAD";
-        
-//         // Open the file in binary read/write mode
-//         std::fstream file(filePath, std::ios::in | std::ios::out | std::ios::binary);
-//         if (!file.is_open()) {
-//             // If the file doesn't exist, create it
-//             file.open(filePath, std::ios::out | std::ios::binary);
-//             if (!file.is_open()) {
-//                 std::cerr << "Error: Could not open or create file: " << filePath << std::endl;
-//                 return false;
-//             }
-//             file.close();
-//             file.open(filePath, std::ios::in | std::ios::out | std::ios::binary);
-//             if (!file.is_open()) {
-//                 std::cerr << "Error: Could not open file after creation: " << filePath << std::endl;
-//                 return false;
-//             }
-//         }
-        
-//         // Calculate offset
-//         size_t offset = static_cast<size_t>(page_id) * PAGE_SIZE;
-//         file.seekp(offset);
-//         if (file.fail()) {
-//             std::cerr << "Error: Could not seek to offset " << offset << " in file: " << filePath << std::endl;
-//             return false;
-//         }
-        
-//         // Convert integers to network byte order
-//         int freespace_network = htonl(freespace);
-//         freespace_network = 1;
-//         std::cout << freespace_network << std::endl;
-//         int id_first_network = htonl(ids_Range.first);
-//         int id_second_network = htonl(ids_Range.second);
-        
-//         // Write freespace
-//         file.write(reinterpret_cast<const char*>(&freespace_network), sizeof(int));
-//         if (file.fail()) {
-//             std::cerr << "Error: Could not write freespace to file: " << filePath << std::endl;
-//             return false;
-//         }
-        
-//         // Write ids_Range.first
-//         file.write(reinterpret_cast<const char*>(&id_first_network), sizeof(int));
-//         if (file.fail()) {
-//             std::cerr << "Error: Could not write ids_Range.first to file: " << filePath << std::endl;
-//             return false;
-//         }
-        
-//         // Write ids_Range.second
-//         file.write(reinterpret_cast<const char*>(&id_second_network), sizeof(int));
-//         if (file.fail()) {
-//             std::cerr << "Error: Could not write ids_Range.second to file: " << filePath << std::endl;
-//             return false;
-//         }
-        
-//         // Write tuples
-//         for (const auto& tuple : tuples) {
-//             file.write(reinterpret_cast<const char*>(&tuple), sizeof(Tuple));
-//             if (file.fail()) {
-//                 std::cerr << "Error: Could not write tuple to file: " << filePath << std::endl;
-//                 return false;
-//             }
-//         }
-        
-//         // Close the file
-//         file.close();
-//         return true;
-//     }
-
-//  Page* Page::deserialize(int page_id, const std::string& dbName, const std::string& tableName) {
-//         // Construct file path
-//         std::string filePath = dbName + "/" + tableName + ".HAD";
-        
-//         // Open the file in binary read mode
-//         std::ifstream file(filePath, std::ios::binary);
-//         if (!file.is_open()) {
-//             std::cerr << "Error: Could not open file: " << filePath << std::endl;
-//             return nullptr;
-//         }
-        
-//         // Calculate offset
-//         size_t offset = static_cast<size_t>(page_id) * PAGE_SIZE;
-//         file.seekg(offset);
-//         if (file.fail()) {
-//             std::cerr << "Error: Could not seek to offset " << offset << " in file: " << filePath << std::endl;
-//             file.close();
-//             return nullptr;
-//         }
-        
-//         // Read freespace
-//         int freespace_network;
-//         file.read(reinterpret_cast<char*>(&freespace_network), sizeof(int));
-//         if (file.fail()) {
-//             std::cerr << "Error: Could not read freespace from file: " << filePath << std::endl;
-//             file.close();
-//             return nullptr;
-//         }
-//         int freespace = ntohl(freespace_network);
-        
-//         // Read ids_Range.first
-//         int id_first_network;
-//         file.read(reinterpret_cast<char*>(&id_first_network), sizeof(int));
-//         if (file.fail()) {
-//             std::cerr << "Error: Could not read ids_Range.first from file: " << filePath << std::endl;
-//             file.close();
-//             return nullptr;
-//         }
-//         int id_first = ntohl(id_first_network);
-        
-//         // Read ids_Range.second
-//         int id_second_network;
-//         file.read(reinterpret_cast<char*>(&id_second_network), sizeof(int));
-//         if (file.fail()) {
-//             std::cerr << "Error: Could not read ids_Range.second from file: " << filePath << std::endl;
-//             file.close();
-//             return nullptr;
-//         }
-//         int id_second = ntohl(id_second_network);
-        
-//         // Calculate used space for tuples
-//         const size_t used_space = PAGE_SIZE - freespace;
-//         const size_t tuples_size = used_space - 3 * sizeof(int); // Subtract metadata size
-//         const size_t num_tuples = tuples_size / sizeof(Tuple);
-        
-//         // Read tuples
-//         std::vector<Tuple> tuples;
-//         tuples.resize(num_tuples);
-//         for (size_t i = 0; i < num_tuples; ++i) {
-//             file.read(reinterpret_cast<char*>(&tuples[i]), sizeof(Tuple));
-//             if (file.fail()) {
-//                 std::cerr << "Error: Could not read tuple " << i << " from file: " << filePath << std::endl;
-//                 file.close();
-//                 return nullptr;
-//             }
-//             // If Tuple has a deserialize method, call it here
-//             // tuples[i].deserialize();
-//         }
-        
-//         // Create a new Page object and initialize it
-//         Page* newPage = new Page();
-//         if (!newPage) {
-//             std::cerr << "Error: Memory allocation failed for new Page object." << std::endl;
-//             file.close();
-//             return nullptr;
-//         }
-//         newPage->freespace = freespace;
-//         newPage->ids_Range = std::make_pair(id_first, id_second);
-//         newPage->tuples = tuples;
-        
-//         // Close the file
-//         file.close();
-//         return newPage;
-//     }
-
+    t->add_attribute("Name", "Alice");
+    t->add_attribute("Age", "30");
+    tuples.push_back(*t);
+}
 
 bool Page::serialize(int page_id, const std::string& dbName, const std::string& tableName) {
     std::string filePath = dbName + "/" + tableName + ".HAD";
@@ -187,15 +38,16 @@ bool Page::serialize(int page_id, const std::string& dbName, const std::string& 
     file.seekg(0, std::ios::end);
     size_t file_size = file.tellg();
     std::cout << file_size<<"ddd"<<std::endl;
-    file.seekp(offset);
+    file.seekp(file_size);
 
     // Extend the file with zeros if necessary
-    // if (offset + PAGE_SIZE > file_size) {
-    //     size_t bytes_to_write = offset + PAGE_SIZE - file_size;
-    //     char padding[bytes_to_write];
-    //     memset(padding, 0, bytes_to_write);
-    //     file.write(padding, bytes_to_write);
-    // }
+    if (offset + PAGE_SIZE > file_size) {
+        size_t bytes_to_write =PAGE_SIZE- file_size;
+        char padding[bytes_to_write];
+        memset(padding, 0, bytes_to_write);
+        file.write(padding, bytes_to_write);
+    }
+    file.seekp(offset);
 
     // Serialize metadata and tuples here
     int fs_network = htonl(freespace);
@@ -223,29 +75,36 @@ bool Page::serialize(int page_id, const std::string& dbName, const std::string& 
         return false;
     }
 
-    // Serialize tuples
-    // for (const auto& tuple : tuples) {
-    //     file.write(reinterpret_cast<const char*>(&tuple), sizeof(Tuple));
-    //     if (file.fail()) {
-    //         std::cerr << "Error: Could not write tuple to file: " << filePath << std::endl;
-    //         file.close();
-    //         return false;
-    //     }
-    // }
+    const int dsize = PAGE_SIZE - 3 * sizeof(int);
+    std::string pageData(dsize, '\0'); // Initialize with PAGE_SIZE null bytes
+    size_t dataOffset = 0;
+
+    for ( auto& tuple : tuples) {
+        std::string tupleData = tuple.Serialize();
+        if (dataOffset + TUPLE_SIZE > dsize) {
+            std::cerr << "Error: Page size exceeded." << std::endl;
+            return false;
+        }
+        std::memcpy(&pageData[dataOffset], tupleData.data(), TUPLE_SIZE);
+        dataOffset += TUPLE_SIZE;
+    }
+    std::cout<<tuples.size()<<"aaaaaaaaaaaaaaaaaa"<<std::endl;
+    // Write the serialized data to disk
+    file.write(pageData.data(), dsize - tuples.size() * 50);
 
     // Calculate the data written and add padding if necessary
-    // size_t data_written = 3 * sizeof(int) ;
-    // if (data_written < PAGE_SIZE) {
-    //     char padding[PAGE_SIZE - data_written];
-    //     memset(padding, 0, PAGE_SIZE - data_written);
-    //     file.write(padding, PAGE_SIZE - data_written);
-    // }
+    size_t data_written = 3 * sizeof(int) + dataOffset;
+    if (data_written < PAGE_SIZE) {
+        char padding[PAGE_SIZE - data_written];
+        memset(padding, 0, PAGE_SIZE - data_written);
+        file.write(padding, PAGE_SIZE - data_written);
+    }
 
     file.close();
     return true;
 }  
 
-Page* Page::deserialize(int page_id, const std::string& dbName, const std::string& tableName) {
+Page* Page::deserialize(Page* page,int page_id, const std::string& dbName, const std::string& tableName) {
         std::string filePath = dbName + "/" + tableName + ".HAD";
         std::ifstream file(filePath, std::ios::in | std::ios::binary);
         if (!file.is_open()) {
@@ -264,6 +123,7 @@ Page* Page::deserialize(int page_id, const std::string& dbName, const std::strin
         size_t file_size = 0;
         file.seekg(0, std::ios::end);
         file_size = file.tellg();
+        std::cout << file_size<<"fffff"<<std::endl;
         file.seekg(offset);
 
         if (file_size < offset + PAGE_SIZE) {
@@ -297,7 +157,23 @@ Page* Page::deserialize(int page_id, const std::string& dbName, const std::strin
         int id_second = ntohl(id_second_network);
 
         const size_t used_space = PAGE_SIZE - freespace;
-        const size_t tuples_size = used_space - 3 * sizeof(int);
+        // const size_t tuples_size = used_space - 3 * sizeof(int);    
+        const size_t tuples_size = 200;    
+
+       const int dsize = PAGE_SIZE - 3 * sizeof(int);
+    std::string pageData(dsize, '\0');
+    file.read(&pageData[0], dsize);
+
+    // Deserialize the tuples from the page data
+    page->tuples.clear();
+    size_t dataOffset = 0;
+    while (dataOffset + TUPLE_SIZE <= tuples_size) {
+        std::string tupleData(&pageData[dataOffset], TUPLE_SIZE);
+        Tuple tuple;
+        tuple.Deserialize(tupleData);
+        page->tuples.push_back(tuple);
+        dataOffset += TUPLE_SIZE;
+    }
 
         // if (used_space < 0 || tuples_size < 0 || tuples_size % sizeof(Tuple) != 0) {
         //     std::cerr << "Invalid space calculations." << std::endl;
@@ -320,61 +196,15 @@ Page* Page::deserialize(int page_id, const std::string& dbName, const std::strin
         //     tuples.push_back(tuple);
         // }
 
-        Page* newPage = new Page();
-        if (!newPage) {
-            std::cerr << "Error: Memory allocation failed for new Page object." << std::endl;
-            file.close();
-            return nullptr;
-        }
-        newPage->freespace = freespace;
+        // Page* page1 = new Page(freespace,{0,0});
+        
+        
         std::cout<<freespace<<"from desir"<<std::endl;
-        newPage->ids_Range = std::make_pair(id_first, id_second);
-        //newPage->tuples = tuples;
+        //page->tuples = tuples;
+        std::cout<<id_first<<"from desir"<<std::endl;
+    page->freespace = freespace;
 
+    page->ids_Range={id_first,id_second};
         file.close();
-        return newPage;
+        return page;
     }
-// #include "page.hpp"
-// #include <iostream>
-
-// bool Page::insert_tuple(const std::vector<std::pair<std::string, std::pair<int, std::string>>>& attributes) {
-//     if (Page_MetaData + sizeof(attributes) > PAGE_SIZE) {
-//         std::cerr << "Not enough space to insert tuple." << std::endl;
-//         return false;
-//     }
-    
-//     tuples.emplace_back(Tuple{attributes});
-//     Page_MetaData += sizeof(attributes);
-//     std::cout << "Tuple inserted successfully." << std::endl;
-//     return true;
-// }
-
-// Tuple* Page::get_tuple(const std::pair<std::string, std::string>& attribute) {
-//     for (auto& tuple : tuples) {
-//         if (tuple.get_attribute(attribute.first) == attribute.second) {
-//             return &tuple;
-//         }
-//     }
-//     std::cerr << "Tuple not found." << std::endl;
-//     return nullptr;
-// }
-
-// bool Page::update_tuple(const std::vector<std::pair<std::string, std::string>>& attributes) {
-//     for (auto& tuple : tuples) {
-//         tuple.update_attribute(attributes);
-//     }
-//     std::cout << "Tuple updated successfully." << std::endl;
-//     return true;
-// }
-
-// bool Page::del_tuple(const std::pair<std::string, std::string>& attribute) {
-//     for (auto it = tuples.begin(); it != tuples.end(); ++it) {
-//         if (it->get_attribute(attribute.first) == attribute.second) {
-//             tuples.erase(it);
-//             std::cout << "Tuple deleted successfully." << std::endl;
-//             return true;
-//         }
-//     }
-//     std::cerr << "Tuple not found to delete." << std::endl;
-//     return false;
-// }
