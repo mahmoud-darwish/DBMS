@@ -3,10 +3,10 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -g
 
 # Source files
-SRCS = main.cpp DataBase.cpp FileManager.cpp page.cpp Table.cpp tuple.cpp
+SRCS = main.cpp DataBase.cpp  page.cpp Table.cpp tuple.cpp ExcuetionEngine.cpp
 
 # Header files
-HDRS = DataBase.hpp FileManager.hpp FileManager.tpp page.hpp Table.hpp tuple.hpp
+HDRS = DataBase.hpp page.hpp Table.hpp tuple.hpp ExcuetionEngine.hpp
 
 # Object files
 OBJS = $(SRCS:.cpp=.o)

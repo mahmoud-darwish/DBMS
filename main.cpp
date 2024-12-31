@@ -1,8 +1,22 @@
-#include "FileManager.hpp"
 #include "DataBase.hpp"
+#include "ExcuetionEngine.hpp"
 #include <iostream>
+#include <cstring>
+int main(int argc, char* argv[]) {
+    DataBase db (argv[1]);
+    db.createDatabase();
+    ExecutionEngine Eg(db);
+    std::map<std::string, std::string> mp;
+    mp["name"] = "Alice";
+    mp["age"] = "10";
+  
 
-int main() {
+    Eg.Create_table("table",mp);
+
+
+
+
+
     // try {
     //     // // Example usage: DB name is "MyDatabase", and file name is "DataFile"
     //     // FileHandler& writer = FileHandler::getInstance("MyDatabase", "DataFile", std::ios::out);
@@ -26,36 +40,37 @@ int main() {
     //     //     std::cout << line << std::endl;
     //     // }
 
-        DataBase db = DataBase("test");
-        std::map<std::string, std::string> mp;
-
-  
-        mp["one"] = "Alice";
-        mp["rwo"] = "Addlice";
-        mp["ddd"] = "Addlice";
-        mp["oddne"] = "Aliddce";
-        //db.createDatabase();
-        //db.createTable("table",mp);
-     
-        Table* my_table = db.getTable("table");   
-        //Page* page = my_table->Create_page();
-        // std::cout << my_table->page_count<< std::endl;
-        Page* ll = my_table->Get_page(1);
-         std::vector<std::pair<std::string, std::pair<int, std::string>>> attributes = {
-        {"Name", {1, "Alice"}},       // Key: "Name", Value: {1, "Alice"}
-        {"Age", {2, "30"}},           // Key: "Age", Value: {2, "30"}
-        {"City", {3, "New York"}},    // Key: "City", Value: {3, "New York"}
-        {"Occupation", {4, "Engineer"}}, // Key: "Occupation", Value: {4, "Engineer"}
-        {"Hobby", {5, "Reading"}}     // Key: "Hobby", Value: {5, "Reading"}
-    };
-        // ll->insert_tuple(attributes);
-        // ll->serialize(1,"test","table");
-        std::vector<Tuple> res=ll->get_tuple({"Name","Alice"});
-        std::cout<<res.size()<<std::endl;
-        std::cout<<ll->tuples.size()<<std::endl;
-        std::cout<<ll->tuples[0].get_attribute("Name")<<std::endl;
+        // DataBase db = DataBase( argv[1]);
+        // std::map<std::string, std::string> mp;
         
-        std::cout<<ll->tuples[0].get_attribute("City")<<std::endl;
+  
+  
+        // mp["one"] = "Alice";
+        // mp["rwo"] = "Addlice";
+        // mp["ddd"] = "Addlice";
+        // mp["oddne"] = "Aliddce";
+        // db.createDatabase();
+        // //db.createTable("table",mp);
+     
+    //     Table* my_table = db.getTable("table");   
+    //     //Page* page = my_table->Create_page();
+    //     // std::cout << my_table->page_count<< std::endl;
+    //     Page* ll = my_table->Get_page(1);
+    //      std::vector<std::pair<std::string, std::pair<int, std::string>>> attributes = {
+    //     {"Name", {1, "Alice"}},       // Key: "Name", Value: {1, "Alice"}
+    //     {"Age", {2, "30"}},           // Key: "Age", Value: {2, "30"}
+    //     {"City", {3, "New York"}},    // Key: "City", Value: {3, "New York"}
+    //     {"Occupation", {4, "Engineer"}}, // Key: "Occupation", Value: {4, "Engineer"}
+    //     {"Hobby", {5, "Reading"}}     // Key: "Hobby", Value: {5, "Reading"}
+    // };
+    //     // ll->insert_tuple(attributes);
+    //     // ll->serialize(1,"test","table");
+    //     std::vector<Tuple> res=ll->get_tuple({"Name","Alice"});
+    //     std::cout<<res.size()<<std::endl;
+    //     std::cout<<ll->tuples.size()<<std::endl;
+    //     std::cout<<ll->tuples[0].get_attribute("Name")<<std::endl;
+        
+    //     std::cout<<ll->tuples[0].get_attribute("City")<<std::endl;
 
 
 

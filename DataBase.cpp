@@ -1,13 +1,12 @@
 // File: database.cpp
 #include "DataBase.hpp"
 #include <iostream>
-#include "FileManager.hpp"
 #include <arpa/inet.h> 
 DataBase::DataBase(const std::string& name) : dbname(name) {}
 
 bool DataBase::createDatabase() {
     if (fs::create_directory(dbname)) {
-        std::cout << "c " << dbname << std::endl;
+
         return true;
     }
     std::cerr << "Failed to create database: " << dbname << std::endl;
@@ -35,7 +34,7 @@ bool DataBase::createTable(const std::string& tableName, const std::map<std::str
     Table* table= new Table(tableName);
     table->schema = schema;
     table->size = size;
-    std::cout << "Table created: " << tableName << std::endl;
+    //std::cout << "Table created: " << tableName << std::endl;
     return true;
 }
 
