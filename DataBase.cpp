@@ -9,7 +9,7 @@ bool DataBase::createDatabase() {
 
         return true;
     }
-    std::cerr << "Failed to create database: " << dbname << std::endl;
+    //std::cerr << "Failed to create database: " << dbname << std::endl;
     return false;
 }
 
@@ -72,9 +72,9 @@ Table* DataBase::getTable(const std::string tableName ) {
         
         
         Table* my = deserializeSchema(dbname,tableName);
-        std::cout <<"offset size "<< my->size<<std::endl;
+        //std::cout <<"offset size "<< my->size<<std::endl;
           for (const auto& [key, value] : my->schema) {
-        std::cout << key << ": " << value << std::endl;
+        //std::cout << key << ": " << value << std::endl;
     }
         return my;
     }
@@ -127,7 +127,7 @@ bool DataBase::serializeSchema(const std::map<std::string, std::string>& schema,
         }
 
         outFile.close();
-        std::cout << "Schema serialized successfully to " << filePath << std::endl;
+        //std::cout << "Schema serialized successfully to " << filePath << std::endl;
         return true;
     } catch (const std::ios_base::failure& e) {
         std::cerr << "Error serializing schema: " << e.what() << std::endl;
@@ -157,8 +157,8 @@ Table* DataBase::deserializeSchema(const std::string& dbName, const std::string&
         throw std::ios_base::failure("Error: Failed to read page count.");
     }
 
-    std::cout << "Size: " << size << std::endl;
-    std::cout << "Page count: " << page_count << std::endl;
+    // std::cout << "Size: " << size << std::endl;
+    // std::cout << "Page count: " << page_count << std::endl;
 
     for (uint32_t i = 0; i < size; ++i) {
         uint32_t keySize_network, valueSize_network;
@@ -170,7 +170,7 @@ Table* DataBase::deserializeSchema(const std::string& dbName, const std::string&
             throw std::ios_base::failure("Error: Failed to read key/value sizes.");
         }
 
-        std::cout << "keySize: " << keySize << ", valueSize: " << valueSize << std::endl;
+        //std::cout << "keySize: " << keySize << ", valueSize: " << valueSize << std::endl;
 
         if (inFile.eof()) {
             throw std::ios_base::failure("Error: Premature end of file while reading key/value sizes.");
@@ -192,7 +192,7 @@ Table* DataBase::deserializeSchema(const std::string& dbName, const std::string&
     table->schema = schema;
     table->size = size;
     inFile.close();
-    std::cout << "Schema deserialized successfully from " << filePath << std::endl;
+   // std::cout << "Schema deserialized successfully from " << filePath << std::endl;
     return table;
 }
 // Deserialize the schema from a .HAD file using FileHandler

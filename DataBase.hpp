@@ -15,10 +15,11 @@ namespace fs = std::filesystem;
 class DataBase {
 
 private:
-    std::string dbname;
+    
     // std::map<std::string, Table*> tables;   // Store tables within the database
 
 public:
+    std::string dbname;
     // Constructor
     DataBase(const std::string& name);
 

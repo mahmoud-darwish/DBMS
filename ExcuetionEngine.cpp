@@ -19,7 +19,11 @@ bool ExecutionEngine::Create_table(const std::string& tableName, const std::map<
 // Insert a record into a table
 bool ExecutionEngine::insert(const std::string& tableName,const std::vector<std::pair<std::string, std::pair<int, std::string>>> attributes) {
     
-   Db.getTable(tableName)->Get_page(1)->insert_tuple(attributes);
+   Page* p =Db.getTable(tableName)->Get_page(1);
+
+   p->insert_tuple(attributes);
+   p->serialize(1,Db.dbname,tableName);
+
     return true;
 }
 
@@ -46,24 +50,21 @@ bool ExecutionEngine::update(const std::string& tableName, const std::string& co
 }
 
 // Delete records from a table
-bool ExecutionEngine::deleteRecord(const std::string& tableName, const std::string& conditionKey, const std::string& conditionValue) {
-   return false;
+bool ExecutionEngine::deleteRecord(std::string& tableName,const std::pair<std::string, std::string>& attribute) {
+   Page* page = Db.getTable(tableName)->Get_page(1);
+   page->del_tuple(attribute);
+    page->serialize(1,Db.dbname,tableName);
+
+    std::cout<<"Records Is Deleted Successfully"<<std::endl;
 }
 
 // Select records from a table
-std::vector<std::unordered_map<std::string, std::string>> ExecutionEngine::select(const std::string& tableName, const std::string& conditionKey, const std::string& conditionValue) {
-    if (!tableExists(tableName)) {
-        std::cerr << "Table '" << tableName << "' does not exist.\n";
-        return {};
-    }
-    std::vector<std::unordered_map<std::string, std::string>> result;
-    for (const auto& record : tables[tableName]) {
-        if (conditionKey.empty() || record.at(conditionKey) == conditionValue) {
-            result.push_back(record);
-        }
-    }
-    std::cout << "Selected " << result.size() << " records from table '" << tableName << "'.\n";
-    return result;
+std::vector<Tuple> ExecutionEngine::select(std::string& tableName,const std::pair<std::string, std::string>& attribute){
+    
+    std::vector<Tuple> res= Db.getTable(tableName)->Get_page(1)->get_tuple(attribute);
+
+    return res;
+   
 }
 
 // Helper method to check if a table exists

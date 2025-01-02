@@ -16,7 +16,7 @@ Page::Page(int free,std::pair<int,int>)
     #pragma pack(push, 1)
 bool Page::insert_tuple(const std::vector<std::pair<std::string, std::pair<int, std::string>>>& attributes){
     Tuple* t = new Tuple();
-    std::cout<<"free  "<<freespace;
+    //std::cout<<"free  "<<freespace;
     if (freespace >= 50){
         freespace -= 50;
         for (const auto& attr : attributes) {
@@ -26,6 +26,26 @@ bool Page::insert_tuple(const std::vector<std::pair<std::string, std::pair<int, 
     }
     tuples.push_back(*t);
 }
+
+bool Page::del_tuple(const std::pair<std::string, std::string>& attribute){
+        if(!(attribute.first == " " && attribute.second == " ")){
+
+            tuples.clear();
+            std::cout<<"All - >"<<tuples.size()<<std::endl;
+        }
+        else{
+            std::vector<Tuple> res= get_tuple(attribute);
+            for(int i = 0;i<res.size();i++){
+                for(int j = 0;j<tuples.size();j++){
+                    if(tuples[j].get_attribute(attribute.first) == res[i].get_attribute(attribute.first)){
+                        tuples.erase(tuples.begin()+i);
+                    }
+                }
+            }
+        std::cout<<" ->"<<tuples.size()<<std::endl;
+        }
+}
+
 
 bool Page::serialize(int page_id, const std::string& dbName, const std::string& tableName) {
     std::string filePath = dbName + "/" + tableName + ".HAD";
@@ -42,7 +62,7 @@ bool Page::serialize(int page_id, const std::string& dbName, const std::string& 
     // Determine the current file size
     file.seekg(0, std::ios::end);
     size_t file_size = file.tellg();
-    std::cout << file_size<<"ddd"<<std::endl;
+    //std::cout << file_size<<"ddd"<<std::endl;
     file.seekp(file_size);
 
     // Extend the file with zeros if necessary
@@ -93,7 +113,7 @@ bool Page::serialize(int page_id, const std::string& dbName, const std::string& 
         std::memcpy(&pageData[dataOffset], tupleData.data(), TUPLE_SIZE);
         dataOffset += TUPLE_SIZE;
     }
-    std::cout<<tuples.size()<<"aaaaaaaaaaaaaaaaaa"<<std::endl;
+    //std::cout<<tuples.size()<<"aaaaaaaaaaaaaaaaaa"<<std::endl;
     // Write the serialized data to disk
     file.write(pageData.data(), dsize - tuples.size() * 50);
 
@@ -128,7 +148,7 @@ Page* Page::deserialize(Page* page,int page_id, const std::string& dbName, const
         size_t file_size = 0;
         file.seekg(0, std::ios::end);
         file_size = file.tellg();
-        std::cout << file_size<<"fffff"<<std::endl;
+        //std::cout << file_size<<"fffff"<<std::endl;
         file.seekg(offset);
 
         if (file_size < offset + PAGE_SIZE) {
@@ -205,9 +225,9 @@ Page* Page::deserialize(Page* page,int page_id, const std::string& dbName, const
         // Page* page1 = new Page(freespace,{0,0});
         
         
-        std::cout<<freespace<<"from desir"<<std::endl;
+        //std::cout<<freespace<<"from desir"<<std::endl;
         //page->tuples = tuples;
-        std::cout<<id_first<<"from desir"<<std::endl;
+       // std::cout<<id_first<<"from desir"<<std::endl;
         page->freespace = freespace;
         page->pageId = page_id;
         page->ids_Range={id_first,id_second};
@@ -217,10 +237,17 @@ Page* Page::deserialize(Page* page,int page_id, const std::string& dbName, const
 
 std::vector<Tuple> Page::get_tuple(const std::pair<std::string, std::string>& attribute){
         std::vector<Tuple> results;
-        for(auto tuple:tuples){
-            if(tuple.get_attribute(attribute.first) == attribute.second){
-                results.push_back(tuple);
+        if(!(attribute.first == " " && attribute.second == " ")){
+            for(auto tuple:tuples){
+                if(tuple.get_attribute(attribute.first) == attribute.second){
+                    results.push_back(tuple);
+                }
             }
+            
+            return results;
         }
-        return results;
+        else{
+           
+            return tuples;
+        }
     }

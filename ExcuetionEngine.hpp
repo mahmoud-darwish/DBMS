@@ -15,10 +15,11 @@ public:
     // Database operations
     bool Create_table(const std::string& tableName, const std::map<std::string,std::string> schema);
 // Insert a record into a table
-bool ExecutionEngine::insert(const std::string& tableName,const std::vector<std::pair<std::string, std::pair<int, std::string>>> attributes)     bool update(const std::string& tableName, const std::string& conditionKey, const std::string& conditionValue,
+bool insert(const std::string& tableName,const std::vector<std::pair<std::string, std::pair<int, std::string>>> attributes) ;
+bool update(const std::string& tableName, const std::string& conditionKey, const std::string& conditionValue,
                 const std::string& updateKey, const std::string& updateValue);
-    bool deleteRecord(const std::string& tableName, const std::string& conditionKey, const std::string& conditionValue);
-    std::vector<std::unordered_map<std::string, std::string>> select(const std::string& tableName, const std::string& conditionKey = "", const std::string& conditionValue = "");
+    bool deleteRecord(std::string& tableName,const std::pair<std::string, std::string>& attribute);
+    std::vector<Tuple> select(std::string& tableName,const std::pair<std::string, std::string>& attribute);
 
 private:
     // Helper methods
